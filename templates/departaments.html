@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h5>Departament log</h5>
+{% for depart in departaments %}
+<table class="table">
+    <h6>Departament # {{ depart.id }}</h6>
+    <thead>
+    <tr class="table-secondary">
+        <th scope="col">Title of departament</th>
+        <th scope="col">Chief</th>
+        <th scope="col">Members</th>
+        <th scope="col">email</th>
+    </tr>
+    </thead>
+    <tr class="table-primary">
+        <td>{{ depart.title }}</td>
+        <td>{{ depart.user.name }} {{ depart.user.surname }}</td>
+        <td>{{ depart.members }}</td>
+        <td>{{ depart.email }}</td>
+    </tr>
+</table>
+{% if current_user.is_authenticated and (current_user == depart.user or current_user.id == 1) %}
+<div>
+    <a href="/departaments/{{ depart.id }}" class="btn btn-warning">
+        Изменить
+    </a>
+    <a href="/departaments_delete/{{ depart.id }}" class="btn btn-danger">
+        Удалить
+    </a>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

@@ -5,9 +5,11 @@ from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
 from data import db_session
+from data.departaments import Departament
 
 from data.users import User
 from data.jobs import Jobs
+from forms.departament import AddDepartamentForm
 from forms.user import LoginForm, RegisterForm
 from forms.job import AddJobForm
 
@@ -92,7 +94,8 @@ def edit_job(id):
     if request.method == "GET":
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                          (Jobs.user == current_user) | (current_user.id == 1)
+                                          (Jobs.user == current_user) | (
+                                                      current_user.id == 1)
                                           ).first()
         if jobs:
             form.team_leader.data = jobs.team_leader
@@ -105,7 +108,8 @@ def edit_job(id):
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                          (Jobs.user == current_user) | (current_user.id == 1)
+                                          (Jobs.user == current_user) | (
+                                                      current_user.id == 1)
                                           ).first()
         if jobs:
             jobs.team_leader = form.team_leader.data
@@ -128,7 +132,8 @@ def edit_job(id):
 def jobs_delete(id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                      (Jobs.user == current_user) | (current_user.id == 1)
+                                      (Jobs.user == current_user) | (
+                                                  current_user.id == 1)
                                       ).first()
     if jobs:
         db_sess.delete(jobs)
@@ -151,6 +156,86 @@ def jobs():
     jobs = db_sess.query(Jobs).all()
     context = {'jobs': jobs}
     return render_template('jobs.html', **context)
+
+
+@app.route('/departaments')
+def departaments():
+    db_sess = db_session.create_session()
+    departaments = db_sess.query(Departament).all()
+    context = {'departaments': departaments}
+    return render_template('departaments.html', **context)
+
+
+@app.route('/add-departament', methods=['GET', 'POST'])
+@login_required
+def add_departament():
+    form = AddDepartamentForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        departament = Departament(
+            title=form.title.data,
+            chief=form.chief.data,
+            members=form.members.data,
+            email=form.email.data,
+        )
+        db_sess.add(departament)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('departament_add.html', title='Добавить департамент', form=form)
+
+
+@app.route('/departaments/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_departament(id):
+    form = AddDepartamentForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        departaments = db_sess.query(Departament).filter(Departament.id == id,
+                                          (Departament.user == current_user) | (
+                                                  current_user.id == 1)
+                                          ).first()
+        if departaments:
+            form.title.data = departaments.title
+            form.chief.data = departaments.chief
+            form.members.data = departaments.members
+            form.email.data = departaments.email
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        departaments = db_sess.query(Departament).filter(Departament.id == id,
+                                          (Departament.user == current_user) | (
+                                                  current_user.id == 1)
+                                          ).first()
+        if departaments:
+            departaments.title = form.title.data
+            departaments.chief = form.chief.data
+            departaments.members = form.members.data
+            departaments.email = form.email.data
+            db_sess.commit()
+            return redirect('/departaments')
+        else:
+            abort(404)
+    return render_template('departament_add.html',
+                           title='Редактирование департамента',
+                           form=form
+                           )
+
+
+@app.route('/departaments_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def departaments_delete(id):
+    db_sess = db_session.create_session()
+    departaments = db_sess.query(Departament).filter(Departament.id == id,
+                                      (Departament.user == current_user) | (
+                                              current_user.id == 1)
+                                      ).first()
+    if departaments:
+        db_sess.delete(departaments)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/departaments')
 
 
 def main():
