@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
 from data import db_session
+from data.category import Category
 from data.departaments import Departament
 
 from data.users import User

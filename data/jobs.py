@@ -17,6 +17,12 @@ class Jobs(SqlAlchemyBase):
                                       name='list of id of participants')
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, name='дата начала')
     end_date = sqlalchemy.Column(sqlalchemy.DateTime, name='дата окончания')
+    category = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("category.id"))
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean,
                                     name='признак завершения')
+
+    categories = orm.relation("Category",
+                              secondary="category_to_jobs",
+                              backref="jobs")
+
     user = orm.relation('User')

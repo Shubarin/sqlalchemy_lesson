@@ -10,6 +10,7 @@
         <th scope="col">Team leader</th>
         <th scope="col">Duration</th>
         <th scope="col">List of collaborators</th>
+        <th scope="col">Category</th>
         <th scope="col">Is finished</th>
     </tr>
     </thead>
@@ -18,6 +19,7 @@
         <td>{{ job.user.name }} {{ job.user.surname }}</td>
         <td>{{ job.work_size }} hour</td>
         <td>{{ job.collaborators }}</td>
+        <td>{{ job.categories|join(', ') }}</td>
         <td>{% if job.is_finished %} Is finished {% else %} Not is finished {% endif %}</td>
     </tr>
 </table>
