@@ -1,0 +1,58 @@
+{
+  "teams": [
+    {
+      "first_name": "Ридли",
+      "last_name": "Скотт",
+      "photo": "../static/img/adult.png",
+      "professions": [
+        "инженер-исследователь",
+        "пилот"
+      ]
+    },
+    {
+      "first_name": "Энди",
+      "last_name": "Уир",
+      "photo": "../static/img/child.png",
+      "professions": [
+        "экзобиолог",
+        "строитель"
+      ]
+    },
+    {
+      "first_name": "Марк",
+      "last_name": "Уотни",
+      "photo": "../static/img/child.png",
+      "professions": [
+        "инженер по терраформированию",
+        "климатолог"
+      ]
+    },
+    {
+      "first_name": "Венката",
+      "last_name": "Капур",
+      "photo": "../static/img/adult.png",
+      "professions": [
+        "специалист по радиационной защите",
+        "астрогеолог"
+      ]
+    },
+    {
+      "first_name": "Тедди",
+      "last_name": "Сандерс",
+      "photo": "../static/img/adult.png",
+      "professions": [
+        "инженер жизнеобеспечения",
+        "гляциолог"
+      ]
+    },
+    {
+      "first_name": "Шон",
+      "last_name": "Бин",
+      "photo": "../static/img/adult.png",
+      "professions": [
+        "штурман",
+        "киберинженер"
+      ]
+    }
+  ]
+}

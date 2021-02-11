@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for field, val in fields.items() %}
+    {{ field }}: {{ val }}
+    {% if not loop.last %} <br> {% endif %}
+{% endfor %}
+{% endblock %}

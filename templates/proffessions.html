@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<{{ list_type }}>
+{% for prof in proffessions %}
+<li>{{ prof }}</li>
+{% endfor %}
+</{{ list_type }}>
+{% endblock %}

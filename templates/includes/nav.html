@@ -1,0 +1,19 @@
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <nav class="my-2 my-md-0 mr-md-3">
+        <h1>Миссия Колонизация Марса</h1>
+    </nav>
+    <nav class="my-2 my-md-0 mr-md-3">
+        <span style="color:red">М</span>арс
+    </nav>
+    <nav class="my-2 my-md-0 mr-md-3">
+        {% if current_user.is_authenticated %}
+        <a class="btn btn-primary " href="/add-job">Добавить работу</a>
+        <a class="navbar-brand" href="/logout">{{ current_user.name }} {{ current_user.surname }}</a>
+        {% else %}
+        <p>
+            <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success" href="/login">Войти</a>
+        </p>
+        {% endif %}
+    </nav>
+</nav>

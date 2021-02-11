@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+{% set member = members|random %}
+<div class="card" style="width: 40%">
+    <h5 class="card-title">{{ member.first_name }} {{ member.last_name }}</h5>
+    <img src="{{ member.photo }}" class="card-img-top">
+    <p class="card-text">{{ member.professions|join(', ') }}</p>
+</div>
+{% endblock %}
