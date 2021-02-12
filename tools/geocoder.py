@@ -7,7 +7,7 @@ import requests
 def geocode(address):
     geocoder_request = f"http://geocode-maps.yandex.ru/1.x/"
     geocoder_params = {
-        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+        "apikey": apikey,
         "geocode": address,
         "format": "json"}
     response = requests.get(geocoder_request, params=geocoder_params)
