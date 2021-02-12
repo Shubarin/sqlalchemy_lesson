@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
+from requests import get
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
@@ -15,14 +16,15 @@ from data.jobs import Jobs
 from forms.departament import AddDepartamentForm
 from forms.user import LoginForm, RegisterForm
 from forms.job import AddJobForm
+from tools.geocoder import get_coordinates, get_map
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
 from flask import make_response
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -105,7 +107,7 @@ def edit_job(id):
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                           (Jobs.user == current_user) | (
-                                                      current_user.id == 1)
+                                                  current_user.id == 1)
                                           ).first()
         if jobs:
             form.team_leader.data = jobs.team_leader
@@ -119,7 +121,7 @@ def edit_job(id):
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                           (Jobs.user == current_user) | (
-                                                      current_user.id == 1)
+                                                  current_user.id == 1)
                                           ).first()
         if jobs:
             jobs.team_leader = form.team_leader.data
@@ -143,7 +145,7 @@ def jobs_delete(id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                       (Jobs.user == current_user) | (
-                                                  current_user.id == 1)
+                                              current_user.id == 1)
                                       ).first()
     if jobs:
         db_sess.delete(jobs)
@@ -191,7 +193,8 @@ def add_departament():
         db_sess.add(departament)
         db_sess.commit()
         return redirect('/')
-    return render_template('departament_add.html', title='Добавить департамент', form=form)
+    return render_template('departament_add.html', title='Добавить департамент',
+                           form=form)
 
 
 @app.route('/departaments/<int:id>', methods=['GET', 'POST'])
@@ -201,9 +204,10 @@ def edit_departament(id):
     if request.method == "GET":
         db_sess = db_session.create_session()
         departaments = db_sess.query(Departament).filter(Departament.id == id,
-                                          (Departament.user == current_user) | (
-                                                  current_user.id == 1)
-                                          ).first()
+                                                         (
+                                                                     Departament.user == current_user) | (
+                                                                 current_user.id == 1)
+                                                         ).first()
         if departaments:
             form.title.data = departaments.title
             form.chief.data = departaments.chief
@@ -214,9 +218,10 @@ def edit_departament(id):
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         departaments = db_sess.query(Departament).filter(Departament.id == id,
-                                          (Departament.user == current_user) | (
-                                                  current_user.id == 1)
-                                          ).first()
+                                                         (
+                                                                     Departament.user == current_user) | (
+                                                                 current_user.id == 1)
+                                                         ).first()
         if departaments:
             departaments.title = form.title.data
             departaments.chief = form.chief.data
@@ -237,15 +242,33 @@ def edit_departament(id):
 def departaments_delete(id):
     db_sess = db_session.create_session()
     departaments = db_sess.query(Departament).filter(Departament.id == id,
-                                      (Departament.user == current_user) | (
-                                              current_user.id == 1)
-                                      ).first()
+                                                     (
+                                                                 Departament.user == current_user) | (
+                                                             current_user.id == 1)
+                                                     ).first()
     if departaments:
         db_sess.delete(departaments)
         db_sess.commit()
     else:
         abort(404)
     return redirect('/departaments')
+
+
+@app.route('/users_show/<int:user_id>')
+def users_show(user_id):
+    user_json = get(f'http://localhost:5000/api/users/{user_id}').json()[
+        'users']
+    lat, lon = get_coordinates(user_json['city_from'])
+    address_ll = f"{lat},{lon}"
+    span = "0.005,0.005"
+    map_src = get_map(f"ll={address_ll}&spn={span}", "sat")
+    context = {
+        'name': user_json['name'],
+        'surname': user_json['surname'],
+        'city_from': user_json['city_from'],
+        'map_src': map_src
+    }
+    return render_template('users_show.html', **context)
 
 
 def main():

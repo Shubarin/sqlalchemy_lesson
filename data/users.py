@@ -24,6 +24,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                                         name='хэшированный пароль')
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                       name='дата изменения')
+    city_from = sqlalchemy.Column(sqlalchemy.String, name="родной город", nullable=True)
 
     jobs = orm.relation("Jobs", back_populates='user')
     departaments = orm.relation("Departament", back_populates='user')

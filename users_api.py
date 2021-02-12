@@ -32,7 +32,7 @@ def get_one_jobs(users_id):
         {
             'users': users.to_dict(only=('id', 'name', 'surname',
                                          'age', 'position', 'speciality',
-                                         'address', 'email'))
+                                         'address', 'email', 'city_from'))
         }
     )
 
