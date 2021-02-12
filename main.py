@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
+import jobs_api
+import users_api
 from data import db_session
 from data.category import Category
 from data.departaments import Departament
@@ -18,6 +20,13 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+from flask import make_response
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @login_manager.user_loader
@@ -241,7 +250,9 @@ def departaments_delete(id):
 
 def main():
     db_session.global_init("db/mars.db")
-    app.run(host='localhost', port=8080)
+    app.register_blueprint(jobs_api.blueprint)
+    app.register_blueprint(users_api.blueprint)
+    app.run(host='localhost', port=5000)
 
 
 if __name__ == '__main__':
